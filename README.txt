@@ -9,3 +9,5 @@ My friend Jared did most of the view (Gamepanel, GUI, HotKeyController, InfoPane
 - For WordCompress, and Compress I did all coding except for the main in each which was used for testing by my proffesor. 
 
 - Each project is pretty clearly commented, but I thought adding this might make it even more clear.
+
+Contact me @ Nick.b.duncan@gmail.com
