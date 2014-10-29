@@ -1,7 +1,7 @@
 
 class SortAndSearch():
 		
-	def binary_search(self, k):
+	def binary_search(self, numbers, k):
 		low = 0
 		high = len(numbers)
 		while low <= high:
