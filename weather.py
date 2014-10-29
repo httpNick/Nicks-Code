@@ -34,5 +34,6 @@ def main():
 	current_city = (json_info['list'][0]['name'])
 	print('Current temperature {0} degrees F in {1} '.format(current_temp, current_city))
 	file_stuff =  the_weather.manage_file(current_city, current_temp)
+	print("complete")
 if __name__ == '__main__': main()
 
