@@ -100,6 +100,8 @@ public class Board extends Observable {
 
 	private int enemies_left;
 
+	public ArrayList<Point> wall_array;
+
 	// private Map<Point, Path> level_one;
 
 	public Board() {
@@ -115,6 +117,7 @@ public class Board extends Observable {
 		my_towers = new ArrayList<Tower>();
 		adjacency = new HashMap<String, Set<Tile>>();
 		path_finder = new AStarAlgorithm();
+		wall_array = new ArrayList<Point>();
 		initializeEnemies();
 		fillBoardPoints("firstlevel.xml");
 		setNeighbors();
@@ -123,7 +126,7 @@ public class Board extends Observable {
 
 	private void initializeEnemies() {
 		for (int i = 0; i < NUMBER_OF_ENEMIES; i++) {
-			my_enemy_list.add(new Enemy(new Point(0, random_opening), 5));
+			my_enemy_list.add(new Enemy(new Point(0, 0), 5));
 		}
 		gameGoingOn = true;
 	}
@@ -133,7 +136,15 @@ public class Board extends Observable {
 		for (int i = 0; i < DEFAULT_WIDTH; i++) {
 			for (int j = 0; j < DEFAULT_HEIGHT; j++) {
 				p = new Point(i, j);
-				board_points[i][j] = new Tile(Terrain.GRASS, p);
+
+				if (j == 1 && i != DEFAULT_WIDTH - 1) {
+					board_points[i][j] = new Tile(Terrain.GRASS, p);
+					board_points[i][j].setBuildable(false);
+					board_points[i][j].setPassable(false);
+					wall_array.add(p);
+				} else {
+					board_points[i][j] = new Tile(Terrain.GRASS, p);
+				}
 			}
 		}
 	}
@@ -404,24 +415,6 @@ public class Board extends Observable {
 
 	public void moveRight() {
 		my_cursor_location.x++;
-	}
-
-	/*
-	 * Places a new tower in the cursors current location.
-	 */
-	public void placeTower() {
-		if (!my_cursor_location.equals(NODE_LOCATION)
-				&& !my_cursor_location.equals(HOUSE_LOCATION)
-				&& board_points[(int) my_cursor_location.getX()][(int) my_cursor_location
-						.getY()].isBuildable()
-				&& !my_cursor_location.equals(new Point(0, random_opening))) {
-			my_towers.add(new Tower(my_cursor_location.getLocation(), 0, 5));
-			Tile location = board_points[(int) my_cursor_location.getX()][(int) my_cursor_location
-					.getY()];
-			location.setBuildable(false);
-			location.setPassable(false);
-			setNeighbors();
-		}
 	}
 
 	public void placeTower(final int the_x, final int the_y) {

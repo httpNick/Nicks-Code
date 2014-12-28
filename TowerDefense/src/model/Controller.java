@@ -27,9 +27,6 @@ public class Controller extends KeyAdapter {
 		case KeyEvent.VK_UP:
 			my_board.moveUp();
 			break;
-		case KeyEvent.VK_SPACE:
-			my_board.placeTower();
-			break;
 		default:
 			break;
 		}
