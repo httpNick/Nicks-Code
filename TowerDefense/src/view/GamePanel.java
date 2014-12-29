@@ -9,9 +9,12 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import model.Board;
@@ -37,12 +40,20 @@ public class GamePanel extends JPanel {
 
 	private int y_increment;
 
+	final BufferedImage wall;
+
 	public GamePanel(final int the_width, final int the_height,
-			final Board the_board, final int the_FPS) {
+			final Board the_board, final int the_FPS) throws IOException {
 		setBackground(Color.WHITE);
 		FPS = the_FPS;
 		my_panel_dimension = new Dimension(the_width, the_height);
 		my_board = the_board;
+		wall = ImageIO
+				.read(new File(
+						"C:\\Users\\httpNick\\Desktop\\repo\\Nicks-Code\\TowerDefense\\images\\ice-wall.jpg"));
+		MouseController controller = new MouseController(my_board, FPS);
+		addMouseListener(controller);
+		addMouseMotionListener(controller);
 		setup();
 	}
 
@@ -92,13 +103,19 @@ public class GamePanel extends JPanel {
 			g2d.drawString("T", t.getLocation().x * x_scale,
 					(t.getLocation().y + 1) * y_scale);
 		}
+		/**
+		 * ArrayList<Point> walls = my_board.wall_array; for (int i = 0; i <
+		 * my_board.wall_array.size(); i++) { g2d.drawRect(walls.get(i).x *
+		 * x_scale, walls.get(i).y * y_scale, x_scale, y_scale);
+		 * g2d.fillRect(walls.get(i).x * x_scale, walls.get(i).y * y_scale,
+		 * x_scale, y_scale);
+		 * 
+		 * }
+		 */
 		ArrayList<Point> walls = my_board.wall_array;
 		for (int i = 0; i < my_board.wall_array.size(); i++) {
-			g2d.drawRect(walls.get(i).x * x_scale, walls.get(i).y * y_scale,
-					x_scale, y_scale);
-			g2d.fillRect(walls.get(i).x * x_scale, walls.get(i).y * y_scale,
-					x_scale, y_scale);
-
+			g2d.drawImage(wall, walls.get(i).x * x_scale, walls.get(i).y
+					* y_scale, null);
 		}
 		g2d.drawString("N", my_board.getNodeLocation().x * x_scale,
 				(my_board.getNodeLocation().y + 1) * y_scale);

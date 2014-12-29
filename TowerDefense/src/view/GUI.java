@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -27,11 +28,13 @@ public class GUI extends JFrame implements Observer {
 
 	private final InfoPanel my_info_panel;
 
+	private final TowerPanel my_tower_panel;
+
 	private final Timer my_timer;
 
 	private boolean is_paused = false;
 
-	public GUI() {
+	public GUI() throws IOException {
 		setup();
 		my_board = new Board();
 		my_board.addObserver(this);
@@ -39,7 +42,8 @@ public class GUI extends JFrame implements Observer {
 				my_board, FPS);
 		my_info_panel = new InfoPanel(window_size.width, window_size.height,
 				my_board);
-
+		my_tower_panel = new TowerPanel(window_size.width, window_size.height,
+				my_board);
 		my_timer = new Timer(1000 / FPS, new ActionListener() {
 
 			@Override
@@ -50,11 +54,9 @@ public class GUI extends JFrame implements Observer {
 		});
 		// addKeyListener(new Controller(my_board));
 		addKeyListener(new HotKeyController(this));
-		MouseController controller = new MouseController(my_board, FPS);
-		addMouseListener(controller);
-		addMouseMotionListener(controller);
 		add(my_panel, BorderLayout.CENTER);
 		add(my_info_panel, BorderLayout.EAST);
+		add(my_tower_panel, BorderLayout.WEST);
 		pack();
 		setResizable(false);
 	}

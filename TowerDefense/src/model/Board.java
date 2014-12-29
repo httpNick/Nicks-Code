@@ -231,7 +231,11 @@ public class Board extends Observable {
 				List<Tile> future_path_list = path_finder.search(this,
 						board_points[NODE_LOCATION.x][NODE_LOCATION.y],
 						board_points[HOUSE_LOCATION.x][HOUSE_LOCATION.y]);
-				e.setNextLocation(future_path_list.get(1).getLocation());
+				try {
+					e.setNextLocation(future_path_list.get(1).getLocation());
+				} catch (NullPointerException ex) {
+					chooseShortestMoveToHome(e);
+				}
 			}
 		}
 	}
@@ -418,7 +422,7 @@ public class Board extends Observable {
 	}
 
 	public void placeTower(final int the_x, final int the_y) {
-		Tower t = new Tower(new Point(the_x, the_y), 5, 5);
+		Tower t = new Tower(new Point(the_x, the_y), 0, 0);
 		if (!(NODE_LOCATION.x == the_x && NODE_LOCATION.y == the_y)
 				&& !(HOUSE_LOCATION.x == the_x && HOUSE_LOCATION.y == the_y)
 				&& board_points[the_x][the_y].isBuildable()
