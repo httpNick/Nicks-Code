@@ -2,7 +2,7 @@ Info about each project submitted:
 
 - I did all coding for BigInteger, MazeGen, uwnickd-powerpaint, and all files included in Nicks Python Weather Project.
 
-- In TowerDefense I was responsible for all of the model (AStarAlgorithm, AStarTile, AStarTileComparator, Board, Controller, Enemy, House, RunMain, Terrain, Tile, and Tower). 
+- In TowerDefense I was responsible for all of the model (AStarAlgorithm, AStarTile, AStarTileComparator, Board, Controller, Enemy, House, RunMain, Terrain, Tile, and Tower), and most of the GUI now. This is an ongoing project. I am making a tower defense game similar to a custom game in WC3 called Wintermaul Wars. 
 
 My friend Jared did most of the view (Gamepanel, GUI, HotKeyController, InfoPanel, and MouseController).
 
