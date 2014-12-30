@@ -102,8 +102,6 @@ public class Board extends Observable {
 
 	private int lives;
 
-	private int enemies_left;
-
 	private BufferedImage tower_image;
 
 	private BufferedImage floor_image;
@@ -112,13 +110,15 @@ public class Board extends Observable {
 
 	public ArrayList<Point> wall_array;
 
+	private int income;
+
 	// private Map<Point, Path> level_one;
 
 	public Board() throws IOException {
 		money = 50;
 		level = 1;
 		lives = 25;
-		enemies_left = NUMBER_OF_ENEMIES;
+		income = 0;
 		my_enemy_list = new ArrayList<Enemy>();
 		my_current_enemy_list = new ArrayList<Enemy>();
 		random_Y_coord = new Random();
@@ -131,17 +131,21 @@ public class Board extends Observable {
 		tower_image = ImageIO.read(new File("images/BTNChaosBlademaster.jpg"));
 		floor_image = ImageIO.read(new File("images/ice-floor.jpg"));
 		edge_image = ImageIO.read(new File("images/white-brick-wall.jpg"));
-		initializeEnemies();
+		ImageIO.read(new File("images/creeps/Shade.jpg"));
+		gameGoingOn = true;
 		fillBoardPoints("firstlevel.xml");
 		setNeighbors();
 
 	}
 
-	private void initializeEnemies() {
-		for (int i = 0; i < NUMBER_OF_ENEMIES; i++) {
-			my_enemy_list.add(new Enemy(new Point(0, 0), 5));
+	public void sendUnit(Enemy e) {
+		if (e.getCost() <= money) {
+			my_enemy_list.add(e);
+			money -= e.getCost();
+			income += e.getIncomeValue();
+			setChanged();
+			notifyObservers(true);
 		}
-		gameGoingOn = true;
 	}
 
 	private void fillBoardPoints(final String file_name) {
@@ -295,13 +299,24 @@ public class Board extends Observable {
 	private void damageEnemies() {
 		boolean has_fired = false;
 		for (Tower t : my_towers) {
-			for (Enemy e : my_current_enemy_list) {
+			for (int i = 0; i < my_current_enemy_list.size(); i++) {
 				if (!has_fired) {
-					if (t.inTowerRange(e.getLocation())) {
+					if (t.inTowerRange(my_current_enemy_list.get(i)
+							.getLocation())) {
 						has_fired = true;
-						e.takeDamage(t.getTowerDamage());
+						my_current_enemy_list.get(i).takeDamage(
+								t.getTowerDamage());
+						if (my_current_enemy_list.get(i).getHP() <= 0) {
+							money = money
+									+ my_current_enemy_list.get(i)
+											.getKillValue();
+							my_current_enemy_list.remove(my_current_enemy_list
+									.get(i));
+						}
 					}
 				}
+				setChanged();
+				notifyObservers(true);
 			}
 			has_fired = false;
 		}
@@ -325,7 +340,6 @@ public class Board extends Observable {
 				if (e.getLocation().equals(HOUSE_LOCATION)) {
 					my_current_enemy_list.remove(i);
 					lives = lives - 1;
-					enemies_left = enemies_left - 1;
 					setChanged();
 					notifyObservers(true);
 				} else {
@@ -335,20 +349,7 @@ public class Board extends Observable {
 				chooseShortestMoveToNode(e);
 			}
 			damageEnemies();
-			deleteDeadEnemies();
 		}
-	}
-
-	private void deleteDeadEnemies() {
-		for (int i = 0; i < my_current_enemy_list.size(); i++) {
-			if (my_current_enemy_list.get(i).takeDamage(0)) {
-				money = money + my_current_enemy_list.get(i).getMoneyValue();
-				enemies_left = enemies_left - 1;
-				my_current_enemy_list.remove(i);
-			}
-		}
-		setChanged();
-		notifyObservers(true);
 	}
 
 	@Override
@@ -444,7 +445,7 @@ public class Board extends Observable {
 	}
 
 	public void placeTower(final int the_x, final int the_y) {
-		Tower t = new Tower(new Point(the_x, the_y), 2, 0, tower_image);
+		Tower t = new Tower(new Point(the_x, the_y), 15, 10, tower_image);
 		if (!(NODE_LOCATION.x == the_x && NODE_LOCATION.y == the_y)
 				&& !(HOUSE_LOCATION.x == the_x && HOUSE_LOCATION.y == the_y)
 				&& board_points[the_x][the_y].isBuildable()
@@ -507,8 +508,8 @@ public class Board extends Observable {
 		return money;
 	}
 
-	public int getEnemiesLeft() {
-		return enemies_left;
+	public int getIncome() {
+		return income;
 	}
 
 	public int getLevel() {

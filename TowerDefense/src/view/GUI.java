@@ -77,6 +77,7 @@ public class GUI extends JFrame implements Observer {
 	}
 
 	private void step() {
+		System.out.println(my_timer);
 		if (counter % FPS == 0) {
 			my_board.step();
 			counter = 0;
@@ -102,7 +103,6 @@ public class GUI extends JFrame implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		my_panel.paintPanel(counter);
 		my_info_panel.changeLabelText((int) my_board.getMoney(),
-				(int) my_board.getLevel(), (int) my_board.getLives(),
-				(int) my_board.getEnemiesLeft());
+				(int) my_board.getLevel(), (int) my_board.getLives(), (int) my_board.getIncome());
 	}
 }

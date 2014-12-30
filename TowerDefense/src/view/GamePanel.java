@@ -101,8 +101,11 @@ public class GamePanel extends JPanel {
 				} else if (e.getNextLocation().y < e.getLocation().y) {
 					y_change = -(y_increment * counter);
 				}
-				g2d.drawOval(e.getX() * x_scale + x_change, e.getY() * y_scale
-						+ y_change, x_scale, y_scale);
+				// g2d.drawOval(e.getX() * x_scale + x_change, e.getY() *
+				// y_scale
+				// + y_change, x_scale, y_scale);
+				g2d.drawImage(e.getImage(), e.getX() * x_scale + x_change,
+						e.getY() * y_scale + y_change, x_scale, y_scale, null);
 				g2d.setFont(new Font("Arial", Font.BOLD, y_scale / 2));
 				String hp = Integer.toString(e.getHP());
 				g2d.drawString(hp, (int) ((e.getX() * x_scale + x_change + 8)),

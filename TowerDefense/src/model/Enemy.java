@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JProgressBar;
 
@@ -20,24 +21,35 @@ public class Enemy {
 
 	private boolean passed_node;
 
-	private int money_value;
+	private int kill_value;
+
+	private int income_value;
+
+	private BufferedImage image;
 
 	JProgressBar hp;
 
-	public Enemy(final Point the_start, int the_money_value) {
+	private int cost;
+
+	public Enemy(final Point the_start, int the_health, int the_kill_value,
+			int the_income_value, int the_cost, BufferedImage the_image) {
 		if (the_start != null) {
-			my_health = DEFAULT_HEALTH;
+			my_health = the_health;
 			my_speed = DEFAULT_SPEED;
 			passed_node = false;
 			my_location = the_start;
-			money_value = the_money_value;
+			kill_value = the_kill_value;
+			income_value = the_income_value;
+			cost = the_cost;
 			JProgressBar hp = new JProgressBar(0, my_health);
+			image = the_image;
 		} else {
 			throw new IllegalArgumentException();
 		}
 	}
 
-	public Enemy(final Point start, final int the_health, final int the_speed) {
+	public Enemy(final Point start, final int the_health, final int the_speed,
+			BufferedImage the_image) {
 		if (the_health < DEFAULT_HEALTH || the_speed < DEFAULT_SPEED
 				|| start == null) {
 			throw new IllegalArgumentException();
@@ -45,6 +57,7 @@ public class Enemy {
 			my_speed = the_speed;
 			my_health = the_health;
 			my_location = start;
+			image = the_image;
 			JProgressBar hp = new JProgressBar(0, my_health);
 		}
 	}
@@ -96,6 +109,10 @@ public class Enemy {
 		return passed_node;
 	}
 
+	public BufferedImage getImage() {
+		return image;
+	}
+
 	public void setPassedNode() {
 		passed_node = true;
 	}
@@ -105,8 +122,16 @@ public class Enemy {
 		my_location.y = the_y;
 	}
 
-	public int getMoneyValue() {
-		return money_value;
+	public int getKillValue() {
+		return kill_value;
+	}
+
+	public int getCost() {
+		return cost;
+	}
+
+	public int getIncomeValue() {
+		return income_value;
 	}
 
 	/**
