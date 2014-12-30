@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Tile {
@@ -18,10 +19,13 @@ public class Tile {
 	private ArrayList<Point> node_path;
 
 	private ArrayList<Point> home_path;
-	
+
 	private String id;
 
-	public Tile(final Terrain the_terrain, final Point the_location) {
+	BufferedImage floor;
+
+	public Tile(final Terrain the_terrain, final Point the_location,
+			BufferedImage the_image) {
 		my_terrain = the_terrain;
 
 		my_location = the_location;
@@ -35,6 +39,12 @@ public class Tile {
 			buildable = false;
 		}
 		id = the_terrain + " " + my_location.toString();
+
+		floor = the_image;
+	}
+
+	public BufferedImage getImage() {
+		return floor;
 	}
 
 	public Terrain getTerrain() {
@@ -84,9 +94,11 @@ public class Tile {
 	public void setPassable(boolean passable) {
 		this.passable = passable;
 	}
+
 	public String getId() {
 		return id;
 	}
+
 	public boolean isDiagonalNeighbor(Tile o) {
 		boolean isDiagonal = false;
 		if (getLocation().x - 1 == o.getLocation().x

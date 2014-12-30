@@ -3,6 +3,7 @@ package view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -16,9 +17,11 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 
 import model.Board;
 import model.Enemy;
+import model.Tile;
 import model.Tower;
 
 @SuppressWarnings("serial")
@@ -48,9 +51,7 @@ public class GamePanel extends JPanel {
 		FPS = the_FPS;
 		my_panel_dimension = new Dimension(the_width, the_height);
 		my_board = the_board;
-		wall = ImageIO
-				.read(new File(
-						"C:\\Users\\httpNick\\Desktop\\repo\\Nicks-Code\\TowerDefense\\images\\ice-wall.jpg"));
+		wall = ImageIO.read(new File("images/ice-wall.jpg"));
 		MouseController controller = new MouseController(my_board, FPS);
 		addMouseListener(controller);
 		addMouseMotionListener(controller);
@@ -59,8 +60,9 @@ public class GamePanel extends JPanel {
 
 	private void setup() {
 		setPreferredSize(my_panel_dimension);
-		x_scale = my_panel_dimension.width / 20;
-		y_scale = my_panel_dimension.height / 10;
+		setFocusable(true);
+		x_scale = my_panel_dimension.width / 30;
+		y_scale = my_panel_dimension.height / 15;
 		x_increment = x_scale / FPS;
 		y_increment = y_scale / FPS;
 	}
@@ -76,8 +78,15 @@ public class GamePanel extends JPanel {
 		final Graphics2D g2d = (Graphics2D) g;
 		final ArrayList<Enemy> enemy_list = my_board.getEnemyList();
 		final ArrayList<Tower> tower_list = my_board.getTowers();
+		for (Tile[] ti : my_board.board_points) {
+			for (Tile t : ti) {
+				g2d.drawImage(t.getImage(), t.getLocation().x * x_scale,
+						t.getLocation().y * y_scale, null);
+			}
+		}
 
 		g2d.setFont(new Font("Arial", Font.BOLD, y_scale));
+		Font old_font = g2d.getFont();
 		try {
 			for (Enemy e : enemy_list) {
 				int x_change = 0;
@@ -94,24 +103,23 @@ public class GamePanel extends JPanel {
 				}
 				g2d.drawOval(e.getX() * x_scale + x_change, e.getY() * y_scale
 						+ y_change, x_scale, y_scale);
+				g2d.setFont(new Font("Arial", Font.BOLD, y_scale / 2));
+				String hp = Integer.toString(e.getHP());
+				g2d.drawString(hp, (int) ((e.getX() * x_scale + x_change + 8)),
+						(e.getY() * y_scale + y_change + 18));
 			}
 		} catch (NullPointerException e) {
 			repaint();
 
 		}
+		g2d.setFont(old_font);
 		for (Tower t : tower_list) {
-			g2d.drawString("T", t.getLocation().x * x_scale,
-					(t.getLocation().y + 1) * y_scale);
+			// g2d.drawString("T", t.getLocation().x * x_scale,
+			// (t.getLocation().y + 1) * y_scale);
+			g2d.drawImage(t.getImage(), t.getLocation().x * x_scale,
+					(t.getLocation().y) * y_scale, null);
 		}
-		/**
-		 * ArrayList<Point> walls = my_board.wall_array; for (int i = 0; i <
-		 * my_board.wall_array.size(); i++) { g2d.drawRect(walls.get(i).x *
-		 * x_scale, walls.get(i).y * y_scale, x_scale, y_scale);
-		 * g2d.fillRect(walls.get(i).x * x_scale, walls.get(i).y * y_scale,
-		 * x_scale, y_scale);
-		 * 
-		 * }
-		 */
+
 		ArrayList<Point> walls = my_board.wall_array;
 		for (int i = 0; i < my_board.wall_array.size(); i++) {
 			g2d.drawImage(wall, walls.get(i).x * x_scale, walls.get(i).y
@@ -122,6 +130,6 @@ public class GamePanel extends JPanel {
 		g2d.drawRect(my_board.getHouseLocation().x * x_scale,
 				my_board.getHouseLocation().y * y_scale, x_scale, y_scale);
 		g2d.drawString("C", my_board.getCursorLocation().x * x_scale,
-				(my_board.getCursorLocation().y + 1) * y_scale);
+				(my_board.getCursorLocation().y + 2) * y_scale);
 	}
 }

@@ -1,6 +1,9 @@
 package model;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,6 +13,7 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.swing.Timer;
 
 import view.GUI;
@@ -25,10 +29,10 @@ import view.GUI;
  */
 public class Board extends Observable {
 	/** Width of the board. */
-	private static final int DEFAULT_WIDTH = 20;
+	private static final int DEFAULT_WIDTH = 30;
 
 	/** Height of the board. */
-	private static final int DEFAULT_HEIGHT = 10;
+	private static final int DEFAULT_HEIGHT = 15;
 
 	private static final int NUMBER_OF_ENEMIES = 20;
 
@@ -65,8 +69,8 @@ public class Board extends Observable {
 
 	private final Point NODE_LOCATION = new Point((DEFAULT_WIDTH / 2) - 1,
 			(DEFAULT_HEIGHT / 2) - 1);
-	private final Point HOUSE_LOCATION = new Point(DEFAULT_WIDTH - 1,
-			DEFAULT_HEIGHT - 1);
+	private final Point HOUSE_LOCATION = new Point(DEFAULT_WIDTH - 2,
+			DEFAULT_HEIGHT - 2);
 
 	// Added to keep track of where towers are being placed.
 	/** Cursor location. Cursor indicates place where next tower will be placed */
@@ -82,7 +86,7 @@ public class Board extends Observable {
 	private final ArrayList<Enemy> my_current_enemy_list;
 
 	/** 2D array of the board's points. */
-	private final Tile[][] board_points;
+	public final Tile[][] board_points;
 
 	private Timer my_timer;
 
@@ -100,11 +104,17 @@ public class Board extends Observable {
 
 	private int enemies_left;
 
+	private BufferedImage tower_image;
+
+	private BufferedImage floor_image;
+
+	private BufferedImage edge_image;
+
 	public ArrayList<Point> wall_array;
 
 	// private Map<Point, Path> level_one;
 
-	public Board() {
+	public Board() throws IOException {
 		money = 50;
 		level = 1;
 		lives = 25;
@@ -118,6 +128,9 @@ public class Board extends Observable {
 		adjacency = new HashMap<String, Set<Tile>>();
 		path_finder = new AStarAlgorithm();
 		wall_array = new ArrayList<Point>();
+		tower_image = ImageIO.read(new File("images/BTNChaosBlademaster.jpg"));
+		floor_image = ImageIO.read(new File("images/ice-floor.jpg"));
+		edge_image = ImageIO.read(new File("images/white-brick-wall.jpg"));
 		initializeEnemies();
 		fillBoardPoints("firstlevel.xml");
 		setNeighbors();
@@ -137,13 +150,22 @@ public class Board extends Observable {
 			for (int j = 0; j < DEFAULT_HEIGHT; j++) {
 				p = new Point(i, j);
 
-				if (j == 1 && i != DEFAULT_WIDTH - 1) {
-					board_points[i][j] = new Tile(Terrain.GRASS, p);
+				if (j == 1 && i < DEFAULT_WIDTH - 2) {
+					board_points[i][j] = new Tile(Terrain.GRASS, p, floor_image);
 					board_points[i][j].setBuildable(false);
 					board_points[i][j].setPassable(false);
 					wall_array.add(p);
 				} else {
-					board_points[i][j] = new Tile(Terrain.GRASS, p);
+					if (i == DEFAULT_WIDTH - 1 || j == DEFAULT_HEIGHT - 1
+							|| i == 0 && j != 0) {
+						board_points[i][j] = new Tile(Terrain.GRASS, p,
+								edge_image);
+						board_points[i][j].setBuildable(false);
+						board_points[i][j].setPassable(false);
+					} else {
+						board_points[i][j] = new Tile(Terrain.GRASS, p,
+								floor_image);
+					}
 				}
 			}
 		}
@@ -422,7 +444,7 @@ public class Board extends Observable {
 	}
 
 	public void placeTower(final int the_x, final int the_y) {
-		Tower t = new Tower(new Point(the_x, the_y), 0, 0);
+		Tower t = new Tower(new Point(the_x, the_y), 2, 0, tower_image);
 		if (!(NODE_LOCATION.x == the_x && NODE_LOCATION.y == the_y)
 				&& !(HOUSE_LOCATION.x == the_x && HOUSE_LOCATION.y == the_y)
 				&& board_points[the_x][the_y].isBuildable()
@@ -446,6 +468,10 @@ public class Board extends Observable {
 		board_points[t.getLocation().x][t.getLocation().y].setBuildable(true);
 		setNeighbors();
 		my_towers.remove(t);
+	}
+
+	public void setTowerImage(BufferedImage the_image) {
+		tower_image = the_image;
 	}
 
 	public ArrayList<Tower> getTowers() {

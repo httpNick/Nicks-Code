@@ -40,6 +40,9 @@ public class InfoPanel extends JPanel {
 		setup();
 	}
 
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public InfoPanel(int the_width, int the_height, Board the_board) {
 		money = 0;
 		lives = 0;
@@ -64,7 +67,7 @@ public class InfoPanel extends JPanel {
 	}
 
 	private void setup() {
-		setPreferredSize(my_panel_dimension);
+		setPreferredSize(new Dimension(116, 10));
 		setLayout(new BorderLayout());
 		add(my_label, BorderLayout.CENTER);
 	}

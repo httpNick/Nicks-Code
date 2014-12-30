@@ -1,10 +1,11 @@
 package model;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 
 public class Tower {
 
-	private static final int DEFAULT_FIRE_RANGE = 5;
+	private static final int DEFAULT_FIRE_RANGE = 1;
 
 	private int my_fire_range;
 
@@ -14,20 +15,24 @@ public class Tower {
 
 	private final int money_value;
 
+	private final BufferedImage image;
+
 	public Tower(final Point tower_location, final int the_damage,
-			int the_money_value) {
+			int the_money_value, BufferedImage the_image) {
 		my_damage = the_damage;
 		my_fire_range = DEFAULT_FIRE_RANGE;
 		my_location = tower_location;
 		money_value = the_money_value;
+		image = the_image;
 	}
 
 	public Tower(final Point tower_location, final int the_damage,
-			final int the_range, int the_money_value) {
+			final int the_range, int the_money_value, BufferedImage the_image) {
 		my_location = tower_location;
 		my_damage = the_damage;
 		my_fire_range = the_range;
 		money_value = the_money_value;
+		image = the_image;
 	}
 
 	public Point getLocation() {
@@ -61,8 +66,13 @@ public class Tower {
 		}
 		return inRange;
 	}
+
 	public int getMoneyValue() {
 		return money_value;
+	}
+
+	public BufferedImage getImage() {
+		return image;
 	}
 
 }

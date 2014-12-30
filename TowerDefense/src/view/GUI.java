@@ -9,6 +9,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import model.Board;
@@ -18,17 +19,21 @@ public class GUI extends JFrame implements Observer {
 
 	private static final int FPS = 30;
 
-	private static final Dimension window_size = new Dimension(600, 300);
+	private static final Dimension window_size = new Dimension(900, 450);
 
 	private int counter = 0;
 
-	private Board my_board;
+	public Board my_board;
 
-	private final GamePanel my_panel;
+	public final GamePanel my_panel;
 
 	private final InfoPanel my_info_panel;
 
+	private final JPanel my_west_panel;
+
 	private final TowerPanel my_tower_panel;
+
+	private final CreepPanel my_creep_panel;
 
 	private final Timer my_timer;
 
@@ -42,8 +47,10 @@ public class GUI extends JFrame implements Observer {
 				my_board, FPS);
 		my_info_panel = new InfoPanel(window_size.width, window_size.height,
 				my_board);
+		my_west_panel = new JPanel(new BorderLayout());
 		my_tower_panel = new TowerPanel(window_size.width, window_size.height,
 				my_board);
+		my_creep_panel = new CreepPanel();
 		my_timer = new Timer(1000 / FPS, new ActionListener() {
 
 			@Override
@@ -56,7 +63,9 @@ public class GUI extends JFrame implements Observer {
 		addKeyListener(new HotKeyController(this));
 		add(my_panel, BorderLayout.CENTER);
 		add(my_info_panel, BorderLayout.EAST);
-		add(my_tower_panel, BorderLayout.WEST);
+		my_west_panel.add(my_tower_panel, BorderLayout.NORTH);
+		my_west_panel.add(my_creep_panel, BorderLayout.SOUTH);
+		add(my_west_panel, BorderLayout.WEST);
 		pack();
 		setResizable(false);
 	}

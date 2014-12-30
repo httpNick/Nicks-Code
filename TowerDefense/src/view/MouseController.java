@@ -21,7 +21,7 @@ public class MouseController extends MouseAdapter {
 	public void mouseClicked(final MouseEvent e) {
 		super.mouseClicked(e);
 		Point p = e.getPoint();
-		my_board.placeTower(p.x / square_size, p.y / square_size - 1);
+		my_board.placeTower(p.x / square_size, (p.y / square_size));
 	}
 
 	@Override

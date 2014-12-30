@@ -2,6 +2,8 @@ package model;
 
 import java.awt.Point;
 
+import javax.swing.JProgressBar;
+
 public class Enemy {
 
 	private static final int DEFAULT_HEALTH = 50;
@@ -17,8 +19,10 @@ public class Enemy {
 	private Point next_location;
 
 	private boolean passed_node;
-	
+
 	private int money_value;
+
+	JProgressBar hp;
 
 	public Enemy(final Point the_start, int the_money_value) {
 		if (the_start != null) {
@@ -27,6 +31,7 @@ public class Enemy {
 			passed_node = false;
 			my_location = the_start;
 			money_value = the_money_value;
+			JProgressBar hp = new JProgressBar(0, my_health);
 		} else {
 			throw new IllegalArgumentException();
 		}
@@ -40,6 +45,7 @@ public class Enemy {
 			my_speed = the_speed;
 			my_health = the_health;
 			my_location = start;
+			JProgressBar hp = new JProgressBar(0, my_health);
 		}
 	}
 
@@ -62,6 +68,10 @@ public class Enemy {
 		return dead;
 	}
 
+	public JProgressBar getHPBar() {
+		return hp;
+	}
+
 	public Point getLocation() {
 		return (Point) my_location.clone();
 	}
@@ -72,6 +82,10 @@ public class Enemy {
 
 	public int getY() {
 		return (int) my_location.getY();
+	}
+
+	public int getHP() {
+		return my_health;
 	}
 
 	public int getSpeed() {
@@ -90,6 +104,7 @@ public class Enemy {
 		my_location.x = the_x;
 		my_location.y = the_y;
 	}
+
 	public int getMoneyValue() {
 		return money_value;
 	}
@@ -110,6 +125,6 @@ public class Enemy {
 	}
 
 	public Point getNextLocation() {
-			return (Point) next_location.clone();
+		return (Point) next_location.clone();
 	}
 }
