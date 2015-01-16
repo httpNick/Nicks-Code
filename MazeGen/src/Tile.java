@@ -45,9 +45,18 @@ public class Tile {
 	public String getId() {
 		return id;
 	}
-	
+
 	public String toString() {
 		return id;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Tile) {
+			Tile that = (Tile) obj;
+			return this.my_location.equals(that.my_location);
+		}
+		return false;
 	}
 
 }

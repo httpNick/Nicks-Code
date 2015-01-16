@@ -21,6 +21,8 @@ public class Maze {
 
 	private AStarAlgorithm path;
 
+	ArrayList<Tile> the_final_path;
+
 	public Maze(int the_width, int the_depth, boolean the_debug) {
 
 		width = the_width;
@@ -44,10 +46,11 @@ public class Maze {
 		depthFirstSearch();
 		walls[START.x][START.y].setStr("  ");
 		walls[END.x][END.y].setStr("  ");
-		FindShortestPath();
+
+		the_final_path = (ArrayList<Tile>) FindShortestPath();
 	}
 
-	private void FindShortestPath() {
+	private List<Tile> FindShortestPath() {
 		for (int i = 0; i < (2 * width) + 1; i++) {
 			for (int j = 0; j < (2 * depth) + 1; j++) {
 				if (i - 1 >= 0 && walls[i - 1][j].isPassable()) {
@@ -56,10 +59,10 @@ public class Maze {
 				if (j - 1 >= 0 && walls[i][j - 1].isPassable()) {
 					walls[i][j].adjacent.add(walls[i][j - 1]);
 				}
-				if (i + 1 < ((width*2) + 1) && walls[i + 1][j].isPassable()) {
+				if (i + 1 < ((width * 2) + 1) && walls[i + 1][j].isPassable()) {
 					walls[i][j].adjacent.add(walls[i + 1][j]);
 				}
-				if (j + 1 < ((depth*2) + 1) && walls[i][j + 1].isPassable()) {
+				if (j + 1 < ((depth * 2) + 1) && walls[i][j + 1].isPassable()) {
 					walls[i][j].adjacent.add(walls[i][j + 1]);
 				}
 			}
@@ -67,7 +70,7 @@ public class Maze {
 		List<Tile> path_list = path.search(this, walls[0][1],
 				walls[END.x][END.y]);
 		System.out.println(path_list);
-
+		return path_list;
 	}
 
 	private void fillGraph() {
@@ -180,9 +183,15 @@ public class Maze {
 
 	public void display() {
 		StringBuilder sb = new StringBuilder();
+		Tile temp;
 		for (int i = 0; i < (2 * width) + 1; i++) {
 			for (int j = 0; j < (2 * depth) + 1; j++) {
-				sb.append(walls[i][j].getStr());
+				temp = new Tile("", new Point(i, j));
+				if (the_final_path.contains(temp)) {
+					sb.append(". ");
+				} else {
+					sb.append(walls[i][j].getStr());
+				}
 			}
 			sb.append("\n");
 		}
