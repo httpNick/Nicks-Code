@@ -11,5 +11,3 @@ Info about each project submitted:
 - DataCacheSimulator is a project that was done in Computer Architecture. It takes in an address trace and moves instruction and data reads/writes from memory through the CPU cache. This project simulates a dual core CPU. Visual GUI was done by Jon Sobocinski, and I did the rest.
 
 - Each project is pretty clearly commented, but I thought adding this might make it even more clear.
-
-Contact me @ Nick.b.duncan@gmail.com
